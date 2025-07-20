@@ -1,0 +1,20 @@
+{
+  "short_name": "Layali Dreams",
+  "name": "Layali Dreams",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/bgQMqgzk/New-Project.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/bgQMqgzk/New-Project.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#6A5ACD",
+  "background_color": "#ffffff"
+} 

@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Figtree:wght@400;700;900&family=Mynerve&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Figtree', sans-serif;
+}
+
+.font-marcellus {
+  font-family: 'Marcellus', serif;
+}
+
+.font-figtreeExtraBold {
+  font-weight: 900;
+}
+
+.font-mynerve {
+  font-family: 'Mynerve', cursive;
+}
+
+.max-w-custom {
+  max-width: 1200px;
+}
+
+.hover\:bg-custom-pink:hover {
+  background-color: #7F7FBD; 
+}
+
+.focus\:bg-custom-pink-light:focus {
+  background-color: rgba(127, 127, 189, 0.1);
+}
+
+.logo-saturated {
+  filter: saturate(1.3) contrast(1.1);
+}
+
+.text-pink-primary {
+  color: #7F7FBD;
+}
+
+.text-blue-primary {
+  color: #8F8FCD;
+}
+
+.text-pink-secondary {
+  color: #6F6FAD;
+}
+
+.text-blue-secondary {
+  color: #9F9FDD;
+}
+
+.text-pink-dark {
+  color: #5F5F9D;
+}
+
+.text-blue-dark {
+  color: #AFAFED;
+}
+
+.bg-pink-blue-gradient {
+  background: linear-gradient(to right, #7F7FBD, #8F8FCD);
+}
+
+.hover\:bg-pink-blue-gradient:hover {
+  background: linear-gradient(to right, #6F6FAD, #7F7FBD);
+}
+
+.bg-blue-pink-gradient {
+  background: linear-gradient(to right, #8F8FCD, #7F7FBD);
+}
+
+.hover\:bg-blue-pink-gradient:hover {
+  background: linear-gradient(to right, #7F7FBD, #6F6FAD);
+}
+
+/* Custom classes for the new purple color states */
+.hover\:bg-custom-purple:hover {
+  background-color: #5a5a9a; /* Darker shade of #6c6cb7 */
+}
+
+.focus\:bg-custom-purple-light:focus {
+  background-color: rgba(108, 108, 183, 0.1);
+}
+
+.file-input::file-selector-button {
+  background-color: rgba(108, 108, 183, 0.1);
+  color: #6c6cb7;
+}
+
+.file-input::file-selector-button:hover {
+  background-color: rgba(108, 108, 183, 0.2);
+}
+
+/* Custom gradient background */
+.bg-gradient-satin {
+  background: linear-gradient(135deg, #8a8ac4 0%, #a0a0d0 100%);
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* QL Editor styles */
+.ql-editor {
+  padding: 12px 0;
+}
+
+.ql-editor ol {
+  padding-left: 1.5em;
+}
+
+.ql-editor li {
+  list-style-type: disc;
+  margin-bottom: 0.25em;
+}
+
+/* No scrollbar utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+} 
