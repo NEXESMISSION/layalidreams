@@ -353,5 +353,3 @@ This project is licensed under the MIT License.
 4. Submit a pull request
 
 ---
-
-Built with ❤️ for Layali Dreams 

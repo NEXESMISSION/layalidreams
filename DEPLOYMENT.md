@@ -143,3 +143,5 @@
 **Deployment URL**: Your Vercel URL will be provided after successful deployment
 **Admin Access**: Use your Supabase admin credentials to log in 
  
+ 
+ 
