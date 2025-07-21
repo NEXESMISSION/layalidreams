@@ -3,22 +3,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "build",
   "framework": "create-react-app",
-  "routes": [
-    { "handle": "filesystem" },
-    { 
-      "src": "/admin/(.*)", 
-      "dest": "/index.html",
-      "continue": true
-    },
-    { 
-      "src": "/admin", 
-      "dest": "/index.html",
-      "continue": true
-    },
-    { 
-      "src": "/(.*)", 
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/admin/(.*)", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
