@@ -4,28 +4,34 @@ import {
   Routes, 
   Route, 
   Navigate,
-  unstable_HistoryRouter as HistoryRouter // Import for future routing
+  unstable_HistoryRouter as HistoryRouter
 } from 'react-router-dom'
-import { createBrowserHistory } from 'history' // Import history
+import { createBrowserHistory } from 'history'
 import { authService } from './services/auth'
+
+// Authentication
 import Login from './components/Auth/Login'
 import Dashboard from './components/Dashboard/Dashboard'
 import DashboardHome from './components/Dashboard/DashboardHome'
-import StoriesList from './components/Stories/StoriesList'
-import OrdersList from './components/Orders/OrdersList'
-import OrdersRemoval from './components/Orders/OrdersRemoval'
-import CategoriesList from './components/Categories/CategoriesList'
-import Loading from './components/Common/Loading'
-import ScrollToTop from './components/ScrollToTop'
 
-// Main Website Components
+// Website Components
 import HomePage from './components/Website/HomePage'
 import BooksPage from './components/Website/BooksPage'
 import AboutPage from './components/Website/AboutPage'
 import ContactPage from './components/Website/ContactPage'
 import OrderForm from './components/Website/OrderForm'
+
+// Common Components
+import Loading from './components/Common/Loading'
+import ScrollToTop from './components/ScrollToTop'
 import Header from './components/Website/Header'
 import Footer from './components/Website/Footer'
+
+// Additional Admin Components
+import StoriesList from './components/Stories/StoriesList'
+import OrdersList from './components/Orders/OrdersList'
+import OrdersRemoval from './components/Orders/OrdersRemoval'
+import CategoriesList from './components/Categories/CategoriesList'
 
 // Create browser history
 const history = createBrowserHistory()
@@ -35,7 +41,6 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check for existing session
     const checkUser = async () => {
       try {
         const currentUser = await authService.getCurrentUser()
@@ -49,17 +54,10 @@ function App() {
 
     checkUser()
 
-    // Listen for auth changes
-    let subscription = null
-    try {
-      subscription = authService.onAuthStateChange((event, session) => {
-        setUser(session?.user ?? null)
-        setLoading(false)
-      })
-    } catch (error) {
-      console.error('Error setting up auth listener:', error)
+    const subscription = authService.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
       setLoading(false)
-    }
+    })
 
     return () => {
       if (subscription && typeof subscription.unsubscribe === 'function') {
@@ -67,6 +65,15 @@ function App() {
       }
     }
   }, [])
+
+  // Wrapper component for pages with Header and Footer
+  const WebsitePage = ({ children }) => (
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+  )
 
   if (loading) {
     return <Loading />
@@ -81,73 +88,33 @@ function App() {
       }}
     >
       <ScrollToTop />
-      <div className="App">
-        <Routes>
-          {/* Root Redirect */}
-          <Route 
-            path="/" 
-            element={user ? <Navigate to="/admin" /> : 
-              <>
-                <Header />
-                <HomePage />
-                <Footer />
-              </>
-            } 
-          />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<WebsitePage><HomePage /></WebsitePage>} />
+        <Route path="/books" element={<WebsitePage><BooksPage /></WebsitePage>} />
+        <Route path="/about" element={<WebsitePage><AboutPage /></WebsitePage>} />
+        <Route path="/contact" element={<WebsitePage><ContactPage /></WebsitePage>} />
+        <Route path="/order/:storyId" element={<WebsitePage><OrderForm /></WebsitePage>} />
 
-          {/* Admin Routes */}
-          <Route 
-            path="/admin" 
-            element={user ? <Dashboard /> : <Navigate to="/admin/login" />}
-          >
-            {/* Nested routes for Dashboard */}
-            <Route index element={<DashboardHome />} />
-            <Route path="stories" element={<StoriesList />} />
-            <Route path="orders" element={<OrdersList />} />
-            <Route path="orders-removal" element={<OrdersRemoval />} />
-            <Route path="categories" element={<CategoriesList />} />
-            <Route path="*" element={<Navigate to="/admin" replace />} />
-          </Route>
+        {/* Authentication Routes */}
+        <Route path="/admin/login" element={
+          user ? <Navigate to="/admin" /> : <Login />
+        } />
 
-          <Route 
-            path="/admin/login" 
-            element={user ? <Navigate to="/admin" /> : <Login />} 
-          />
-          
-          {/* Main Website Routes */}
-          <Route path="/books" element={
-            <>
-              <Header />
-              <BooksPage />
-              <Footer />
-            </>
-          } />
-          <Route path="/order/:storyId" element={
-            <>
-              <Header />
-              <OrderForm />
-              <Footer />
-            </>
-          } />
-          <Route path="/about" element={
-            <>
-              <Header />
-              <AboutPage />
-              <Footer />
-            </>
-          } />
-          <Route path="/contact" element={
-            <>
-              <Header />
-              <ContactPage />
-              <Footer />
-            </>
-          } />
+        {/* Admin Dashboard Routes */}
+        <Route path="/admin" element={
+          user ? <Dashboard /> : <Navigate to="/admin/login" />
+        }>
+          <Route index element={<DashboardHome />} />
+          <Route path="stories" element={<StoriesList />} />
+          <Route path="orders" element={<OrdersList />} />
+          <Route path="orders-removal" element={<OrdersRemoval />} />
+          <Route path="categories" element={<CategoriesList />} />
+        </Route>
 
-          {/* 404 Redirect */}
-          <Route path="*" element={<Navigate to={user ? "/admin" : "/"} />} />
-        </Routes>
-      </div>
+        {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </HistoryRouter>
   )
 }
