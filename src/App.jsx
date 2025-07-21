@@ -4,6 +4,7 @@ import { authService } from './services/auth'
 import Login from './components/Auth/Login'
 import Dashboard from './components/Dashboard/Dashboard'
 import Loading from './components/Common/Loading'
+import ScrollToTop from './components/ScrollToTop'
 
 // Main Website Components
 import HomePage from './components/Website/HomePage'
@@ -58,6 +59,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Routes>
           {/* Admin Routes - Simplified */}
