@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import StoriesList from '../Stories/StoriesList'
@@ -20,14 +20,7 @@ export default function Dashboard() {
         
         <main className="py-6">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <Routes>
-              <Route path="/" element={<DashboardHome />} />
-              <Route path="/stories" element={<StoriesList />} />
-              <Route path="/orders" element={<OrdersList />} />
-              <Route path="/orders-removal" element={<OrdersRemoval />} />
-              <Route path="/categories" element={<CategoriesList />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Outlet /> {/* This will render nested routes */}
           </div>
         </main>
       </div>

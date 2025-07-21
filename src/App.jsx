@@ -10,6 +10,11 @@ import { createBrowserHistory } from 'history' // Import history
 import { authService } from './services/auth'
 import Login from './components/Auth/Login'
 import Dashboard from './components/Dashboard/Dashboard'
+import DashboardHome from './components/Dashboard/DashboardHome'
+import StoriesList from './components/Stories/StoriesList'
+import OrdersList from './components/Orders/OrdersList'
+import OrdersRemoval from './components/Orders/OrdersRemoval'
+import CategoriesList from './components/Categories/CategoriesList'
 import Loading from './components/Common/Loading'
 import ScrollToTop from './components/ScrollToTop'
 
@@ -78,24 +83,38 @@ function App() {
       <ScrollToTop />
       <div className="App">
         <Routes>
-          {/* Admin Routes - Simplified */}
+          {/* Root Redirect */}
+          <Route 
+            path="/" 
+            element={user ? <Navigate to="/admin" /> : 
+              <>
+                <Header />
+                <HomePage />
+                <Footer />
+              </>
+            } 
+          />
+
+          {/* Admin Routes */}
+          <Route 
+            path="/admin" 
+            element={user ? <Dashboard /> : <Navigate to="/admin/login" />}
+          >
+            {/* Nested routes for Dashboard */}
+            <Route index element={<DashboardHome />} />
+            <Route path="stories" element={<StoriesList />} />
+            <Route path="orders" element={<OrdersList />} />
+            <Route path="orders-removal" element={<OrdersRemoval />} />
+            <Route path="categories" element={<CategoriesList />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </Route>
+
           <Route 
             path="/admin/login" 
             element={user ? <Navigate to="/admin" /> : <Login />} 
           />
-          <Route 
-            path="/admin/*" 
-            element={user ? <Dashboard /> : <Navigate to="/admin/login" />} 
-          />
           
           {/* Main Website Routes */}
-          <Route path="/" element={
-            <>
-              <Header />
-              <HomePage />
-              <Footer />
-            </>
-          } />
           <Route path="/books" element={
             <>
               <Header />
@@ -124,6 +143,9 @@ function App() {
               <Footer />
             </>
           } />
+
+          {/* 404 Redirect */}
+          <Route path="*" element={<Navigate to={user ? "/admin" : "/"} />} />
         </Routes>
       </div>
     </HistoryRouter>
