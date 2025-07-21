@@ -110,6 +110,9 @@ function App() {
           <Route path="orders" element={<OrdersList />} />
           <Route path="orders-removal" element={<OrdersRemoval />} />
           <Route path="categories" element={<CategoriesList />} />
+          
+          {/* Catch-all for admin routes */}
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
 
         {/* Catch-all route */}
