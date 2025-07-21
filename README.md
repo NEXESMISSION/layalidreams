@@ -1,89 +1,70 @@
 # Layali Dreams Admin Dashboard
 
-## Deployment Guide
+## Overview
+Layali Dreams Admin Dashboard is a comprehensive web application for managing personalized storybooks, orders, and categories.
 
-### Prerequisites
-- Node.js (v16 or higher)
-- Vercel CLI (optional)
-- Supabase Account
+## Features
+- 🔐 Secure admin authentication
+- 📚 Story management (CRUD operations)
+- 📦 Order tracking and management
+- 🏷️ Category management
+- 📊 Analytics dashboard
 
-### Environment Variables
-Create a `.env` file in the root directory with the following variables:
-```
-REACT_APP_SUPABASE_URL=your_supabase_project_url
-REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+## Tech Stack
+- **Frontend**: React 18
+- **Routing**: React Router
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase
+- **Authentication**: Supabase Auth
 
-### Deployment Steps
+## Prerequisites
+- Node.js (v16+)
+- npm or yarn
+- Supabase account
 
-#### 1. Vercel Deployment (Recommended)
+## Local Development
 
-##### Automatic Deployment
-1. Fork the repository
-2. Connect your GitHub repository to Vercel
-3. Set up environment variables in Vercel dashboard
-   - `REACT_APP_SUPABASE_URL`
-   - `REACT_APP_SUPABASE_ANON_KEY`
-4. Vercel will automatically deploy on push to main branch
-
-##### Manual Deployment with Vercel CLI
-1. Install Vercel CLI
-```bash
-npm install -g vercel
-```
-
-2. Login to Vercel
-```bash
-vercel login
-```
-
-3. Deploy to Vercel
-```bash
-vercel
-```
-
-4. For production deployment
-```bash
-vercel --prod
-```
-
-### Local Development
-1. Clone the repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/NEXESMISSION/layalidreams.git
 cd layalidreams
 ```
 
-2. Install dependencies
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-3. Start development server
+### 3. Environment Setup
+Create a `.env` file in the root directory:
+```
+REACT_APP_SUPABASE_URL=your_supabase_project_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run Development Server
 ```bash
 npm start
 ```
 
-### Supabase Configuration
-1. Create a new Supabase project
-2. Set up database tables:
-   - stories
-   - orders
-   - categories
-3. Configure Row Level Security (RLS) policies
-4. Create storage buckets for images
+## Deployment
 
-### Troubleshooting
-- Ensure all environment variables are correctly set
-- Check Vercel and Supabase logs for any deployment issues
-- Verify database connection and RLS policies
+### Vercel Deployment
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Configure build settings:
+   - Build Command: `npm run build`
+   - Output Directory: `build`
 
-## Technologies
-- React 18
-- Supabase
-- Tailwind CSS
-- React Router
-- Vercel Hosting
+## Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 MIT License
+
+## Contact
+DIGIPLUS X TFP Team
