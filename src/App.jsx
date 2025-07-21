@@ -4,9 +4,8 @@ import {
   Routes, 
   Route, 
   Navigate,
-  unstable_HistoryRouter as HistoryRouter
+  Outlet
 } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
 import { authService } from './services/auth'
 
 // Authentication
@@ -32,9 +31,6 @@ import StoriesList from './components/Stories/StoriesList'
 import OrdersList from './components/Orders/OrdersList'
 import OrdersRemoval from './components/Orders/OrdersRemoval'
 import CategoriesList from './components/Categories/CategoriesList'
-
-// Create browser history
-const history = createBrowserHistory()
 
 function App() {
   const [user, setUser] = useState(null)
@@ -75,18 +71,19 @@ function App() {
     </>
   )
 
+  // Protected Route Component
+  const ProtectedRoute = ({ children }) => {
+    if (loading) return <Loading />
+    return user ? children : <Navigate to="/admin/login" replace />
+  }
+
+  // If still loading, show loading screen
   if (loading) {
     return <Loading />
   }
 
   return (
-    <HistoryRouter 
-      history={history}
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true
-      }}
-    >
+    <Router>
       <ScrollToTop />
       <Routes>
         {/* Public Routes */}
@@ -98,24 +95,29 @@ function App() {
 
         {/* Authentication Routes */}
         <Route path="/admin/login" element={
-          user ? <Navigate to="/admin" /> : <Login />
+          user ? <Navigate to="/admin" replace /> : <Login />
         } />
 
         {/* Admin Dashboard Routes */}
         <Route path="/admin" element={
-          user ? <Dashboard /> : <Navigate to="/admin/login" />
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
         }>
           <Route index element={<DashboardHome />} />
           <Route path="stories" element={<StoriesList />} />
           <Route path="orders" element={<OrdersList />} />
           <Route path="orders-removal" element={<OrdersRemoval />} />
           <Route path="categories" element={<CategoriesList />} />
+          
+          {/* Catch-all for admin routes */}
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
 
         {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </HistoryRouter>
+    </Router>
   )
 }
 

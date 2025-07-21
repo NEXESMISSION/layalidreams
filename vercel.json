@@ -9,15 +9,20 @@
   ],
   "routes": [
     {
-      "src": "/(.*).",
+      "src": "^/static/(.*)",
       "headers": {
-        "Cache-Control": "s-maxage=1, stale-while-revalidate"
+        "cache-control": "max-age=31536000,immutable"
       }
     },
     {
-      "src": "/(.*)",
-      "dest": "/"
+      "src": "^/(.*)",
+      "dest": "/index.html",
+      "continue": true
     }
+  ],
+  "rewrites": [
+    { "source": "/admin/(.*)", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/index.html" }
   ]
 } 
  
