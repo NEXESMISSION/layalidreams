@@ -87,31 +87,77 @@ export default function OrderForm() {
     e.preventDefault()
     setSubmitting(true)
 
-    try {
-      // Upload image if selected
-      let imageUrl = null
-      if (selectedImage) {
-        const { publicUrl, error: uploadError } = await storiesService.uploadImage(selectedImage)
-        if (uploadError) throw uploadError
-        imageUrl = publicUrl
-      }
+    // Enhanced Validation
+    if (!formData.child_name || formData.child_name.trim().length < 2) {
+      alert('Please provide a valid child name (at least 2 characters)')
+      setSubmitting(false)
+      return
+    }
 
-      // Create order
-      const orderData = {
-        ...formData,
-        customer_email: 'no-email@layalidreams.com', // Default email for database constraint
-        shipping_address: 'Address to be provided', // Default address for database constraint
+    if (!formData.customer_phone || !/^[0-9]{8,15}$/.test(formData.customer_phone)) {
+      alert('Please provide a valid phone number (8-15 digits)')
+      setSubmitting(false)
+      return
+    }
+
+    try {
+      // Sanitize input data
+      const sanitizedData = {
+        customer_name: formData.child_name, // Use child name as customer name
+        customer_phone: formData.customer_phone.replace(/\D/g, ''), // Remove non-digit characters
+        child_name: formData.child_name,
+        personalization_notes: formData.personalization_notes || '',
+        customer_email: 'anonymous@layalidreams.com', // Fixed default email
+        shipping_address: 'To be confirmed', // Default shipping address
         story_id: storyId,
         story_name: story.name,
         total_price: story.price * formData.quantity,
-        personalization_image: imageUrl,
+        quantity: formData.quantity || 1,
         status: 'pending'
       }
 
-      const { data, error } = await ordersService.createOrder(orderData)
+      // Upload image if selected
+      let imageUrl = null
+      if (selectedImage) {
+        const maxFileSize = 10 * 1024 * 1024 // 10MB
+        if (selectedImage.size > maxFileSize) {
+          alert('Image must be less than 10MB')
+          setSubmitting(false)
+          return
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+        if (!allowedTypes.includes(selectedImage.type)) {
+          alert('Only JPEG, PNG, and GIF images are allowed')
+          setSubmitting(false)
+          return
+        }
+
+        const { publicUrl, error: uploadError } = await storiesService.uploadImage(selectedImage)
+        if (uploadError) {
+          console.error('Image upload error:', uploadError)
+          alert('Failed to upload image. Please try again.')
+          setSubmitting(false)
+          return
+        }
+        imageUrl = publicUrl
+        sanitizedData.personalization_image = imageUrl
+      }
+
+      const { data, error } = await ordersService.createOrder(sanitizedData)
+      
       if (error) {
-        console.error('Supabase error:', error)
-        throw error
+        console.error('Order creation error:', error)
+        
+        // More specific error handling
+        if (error.includes('row-level security policy')) {
+          alert('Sorry, we are unable to process your order at the moment. Please try again later or contact support.')
+        } else {
+          alert(`Failed to create order: ${error}`)
+        }
+        
+        setSubmitting(false)
+        return
       }
 
       setSuccess(true)
@@ -119,9 +165,8 @@ export default function OrderForm() {
         navigate('/books')
       }, 3000)
     } catch (error) {
-      console.error('Error creating order:', error)
-      alert(`Error creating order: ${error.message || 'Please try again.'}`)
-    } finally {
+      console.error('Unexpected error creating order:', error)
+      alert('An unexpected error occurred. Please try again.')
       setSubmitting(false)
     }
   }

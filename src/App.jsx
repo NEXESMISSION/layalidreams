@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { 
+  BrowserRouter as Router, 
+  Routes, 
+  Route, 
+  Navigate,
+  unstable_HistoryRouter as HistoryRouter // Import for future routing
+} from 'react-router-dom'
+import { createBrowserHistory } from 'history' // Import history
 import { authService } from './services/auth'
 import Login from './components/Auth/Login'
 import Dashboard from './components/Dashboard/Dashboard'
@@ -14,6 +21,9 @@ import ContactPage from './components/Website/ContactPage'
 import OrderForm from './components/Website/OrderForm'
 import Header from './components/Website/Header'
 import Footer from './components/Website/Footer'
+
+// Create browser history
+const history = createBrowserHistory()
 
 function App() {
   const [user, setUser] = useState(null)
@@ -58,7 +68,13 @@ function App() {
   }
 
   return (
-    <Router>
+    <HistoryRouter 
+      history={history}
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <ScrollToTop />
       <div className="App">
         <Routes>
@@ -110,7 +126,7 @@ function App() {
           } />
         </Routes>
       </div>
-    </Router>
+    </HistoryRouter>
   )
 }
 
