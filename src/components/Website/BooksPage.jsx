@@ -157,17 +157,17 @@ export default function BooksPage() {
                     <div>
                       <button 
                         onClick={() => handleOrder(story)}
-                        className="text-base md:text-lg font-marcellus line-clamp-2 md:line-clamp-1 text-center md:text-left hover:text-[#6A5ACD] transition-colors"
+                        className="text-base md:text-lg font-marcellus line-clamp-2 md:line-clamp-1 text-left hover:text-[#6A5ACD] transition-colors"
                       >
                         {story.name}
                       </button>
                       {story.description && (
-                        <div className="text-xs line-clamp-2 md:line-clamp-2 text-center md:text-left text-black mt-1">
+                        <div className="text-xs line-clamp-2 md:line-clamp-2 text-left text-black mt-1">
                           {story.description}
                         </div>
                       )}
                     </div>
-                    <div className="mt-2 w-fit mx-auto md:mx-0">
+                    <div className="mt-2 w-fit">
                       <button 
                         onClick={() => handleOrder(story)}
                         className="px-8 h-12 inline-flex items-center justify-center bg-gradient-to-r from-[#6A5ACD] via-[#7A6ADD] to-[#FAC2FF] hover:from-[#5A4ABD] hover:via-[#6A5ACD] hover:to-[#EAB2EF] hover:shadow-lg border border-transparent font-figtree rounded-full text-sm text-white transition-all duration-300 w-full font-bold transform hover:scale-105"

@@ -25,6 +25,7 @@ import Loading from './components/Common/Loading'
 import ScrollToTop from './components/ScrollToTop'
 import Header from './components/Website/Header'
 import Footer from './components/Website/Footer'
+import DeploymentCheck from './components/Common/DeploymentCheck'
 
 // Additional Admin Components
 import StoriesList from './components/Stories/StoriesList'
@@ -32,78 +33,135 @@ import OrdersList from './components/Orders/OrdersList'
 import OrdersRemoval from './components/Orders/OrdersRemoval'
 import CategoriesList from './components/Categories/CategoriesList'
 
-function App() {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+// Enhanced Protected Route Component
+const ProtectedRoute = ({ children, requiredRole = null }) => {
+  const [authState, setAuthState] = useState({
+    user: null,
+    loading: true,
+    isAuthenticated: false
+  })
 
   useEffect(() => {
-    const checkUser = async () => {
+    const checkAuthStatus = async () => {
       try {
         const currentUser = await authService.getCurrentUser()
-        setUser(currentUser)
+        
+        // Advanced role checking
+        const isAdmin = authService.isAdminUser(currentUser)
+
+        console.log('Current User:', currentUser)
+        console.log('Is Admin:', isAdmin)
+        console.log('User Metadata:', currentUser?.user_metadata)
+
+        // Check if user exists and has the required role
+        if (currentUser) {
+          const hasRequiredRole = !requiredRole || isAdmin
+
+          setAuthState({
+            user: currentUser,
+            loading: false,
+            isAuthenticated: hasRequiredRole
+          })
+        } else {
+          setAuthState({
+            user: null,
+            loading: false,
+            isAuthenticated: false
+          })
+        }
       } catch (error) {
-        console.error('Error checking user:', error)
-      } finally {
-        setLoading(false)
+        console.error('Authentication check failed:', error)
+        setAuthState({
+          user: null,
+          loading: false,
+          isAuthenticated: false
+        })
       }
     }
 
-    checkUser()
+    // Initial check
+    checkAuthStatus()
 
-    const subscription = authService.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
+    // Set up auth state change listener
+    const { unsubscribe } = authService.onAuthStateChange((isAuthenticated, userData) => {
+      console.log('Auth State Change User:', userData)
+      console.log('Is Authenticated:', isAuthenticated)
+      
+      setAuthState({
+        user: userData,
+        loading: false,
+        isAuthenticated: isAuthenticated
+      })
     })
 
     return () => {
-      if (subscription && typeof subscription.unsubscribe === 'function') {
-        subscription.unsubscribe()
-      }
+      if (unsubscribe) unsubscribe()
     }
-  }, [])
+  }, [requiredRole])
 
-  // Wrapper component for pages with Header and Footer
-  const WebsitePage = ({ children }) => (
-    <>
-      <Header />
-      {children}
-      <Footer />
-    </>
-  )
-
-  // Protected Route Component
-  const ProtectedRoute = ({ children }) => {
-    if (loading) return <Loading />
-    return user ? children : <Navigate to="/admin/login" replace />
-  }
-
-  // If still loading, show loading screen
-  if (loading) {
+  // Loading state
+  if (authState.loading) {
     return <Loading />
   }
 
+  // Not authenticated or lacks required role
+  if (!authState.isAuthenticated) {
+    return <Navigate to="/admin/login" replace />
+  }
+
+  return children
+}
+
+function App() {
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <ScrollToTop />
+      <DeploymentCheck />
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<WebsitePage><HomePage /></WebsitePage>} />
-        <Route path="/books" element={<WebsitePage><BooksPage /></WebsitePage>} />
-        <Route path="/about" element={<WebsitePage><AboutPage /></WebsitePage>} />
-        <Route path="/contact" element={<WebsitePage><ContactPage /></WebsitePage>} />
-        <Route path="/order/:storyId" element={<WebsitePage><OrderForm /></WebsitePage>} />
-
-        {/* Authentication Routes */}
-        <Route path="/admin/login" element={
-          user ? <Navigate to="/admin" replace /> : <Login />
+        <Route path="/" element={
+          <WebsitePage>
+            <HomePage />
+          </WebsitePage>
+        } />
+        <Route path="/books" element={
+          <WebsitePage>
+            <BooksPage />
+          </WebsitePage>
+        } />
+        <Route path="/about" element={
+          <WebsitePage>
+            <AboutPage />
+          </WebsitePage>
+        } />
+        <Route path="/contact" element={
+          <WebsitePage>
+            <ContactPage />
+          </WebsitePage>
+        } />
+        <Route path="/order/:storyId" element={
+          <WebsitePage>
+            <OrderForm />
+          </WebsitePage>
         } />
 
+        {/* Authentication Routes */}
+        <Route path="/admin/login" element={<Login />} />
+
         {/* Admin Dashboard Routes */}
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }>
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<DashboardHome />} />
           <Route path="stories" element={<StoriesList />} />
           <Route path="orders" element={<OrdersList />} />
@@ -120,5 +178,14 @@ function App() {
     </Router>
   )
 }
+
+// Wrapper component for pages with Header and Footer
+const WebsitePage = ({ children }) => (
+  <>
+    <Header />
+    {children}
+    <Footer />
+  </>
+)
 
 export default App 

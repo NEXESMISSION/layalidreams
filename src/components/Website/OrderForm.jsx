@@ -161,9 +161,14 @@ export default function OrderForm() {
       }
 
       setSuccess(true)
-      setTimeout(() => {
+      
+      // Use useEffect for navigation with scroll
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' })
         navigate('/books')
       }, 3000)
+
+      return () => clearTimeout(timer)
     } catch (error) {
       console.error('Unexpected error creating order:', error)
       alert('An unexpected error occurred. Please try again.')
@@ -205,14 +210,20 @@ export default function OrderForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 scrollable-content">
+        <div className="bg-white w-full max-w-md mx-4 p-8 rounded-2xl shadow-2xl text-center transform transition-all duration-300 ease-in-out scale-100 hover:scale-105">
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="h-16 w-16 text-green-600 animate-pulse" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Order Placed Successfully!</h2>
-          <p className="text-gray-600 mb-6">Thank you for your order. We'll contact you soon with details.</p>
-          <p className="text-sm text-gray-500">Redirecting to books page...</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 animate-bounce">
+            Order Placed Successfully!
+          </h2>
+          <p className="text-lg text-gray-600 mb-6">
+            Thank you for your order. We'll contact you soon with details.
+          </p>
+          <p className="text-sm text-gray-500 animate-pulse">
+            Redirecting to books page...
+          </p>
         </div>
       </div>
     )
